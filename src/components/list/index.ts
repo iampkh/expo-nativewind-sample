@@ -3,6 +3,12 @@ export { DefaultVariant } from './DefaultVariant';
 export { NoteVariant } from './NoteVariant';
 export { TodoVariant } from './TodoVariant';
 export { ContactVariant } from './ContactVariant';
+
+// New List Component exports
+export { List } from './List';
+export { SimpleListVariant } from './SimpleListVariant';
+export { GroupedListVariant } from './GroupedListVariant';
+
 export type { 
   ListItemProps, 
   BaseListItemProps, 
@@ -10,5 +16,11 @@ export type {
   NoteListItemProps,
   TodoListItemProps,
   ContactListItemProps,
-  ListVariant 
+  ListVariant,
+  // New List Component types
+  BaseListProps,
+  SimpleListProps,
+  GroupedListProps,
+  ListComponentVariant,
+  ListProps
 } from './types';

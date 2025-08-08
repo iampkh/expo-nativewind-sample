@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, TextInput, Alert } from 'react-native';
+import { router } from 'expo-router';
 import { Text, View, Button } from '@/src/components/themed';
 import { ListItem } from '@/src/components/list';
 import { useTheme } from '@/src/hooks/useTheme';
@@ -98,12 +99,20 @@ export default function NotesScreen() {
             My Notes
           </Text>
           
-          <Button
-            title={currentTheme === 'dark' ? '☀️' : '🌙'}
-            onPress={toggleDarkLight}
-            variant="outline"
-            size="sm"
-          />
+          <View className="flex-row gap-2">
+            <Button
+              title="List Examples"
+              onPress={() => router.push('/ListExample')}
+              variant="secondary"
+              size="sm"
+            />
+            <Button
+              title={currentTheme === 'dark' ? '☀️' : '🌙'}
+              onPress={toggleDarkLight}
+              variant="outline"
+              size="sm"
+            />
+          </View>
         </View>
 
         {/* Stats */}
