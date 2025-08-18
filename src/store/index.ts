@@ -1,7 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import notesSlice from './slices/notesSlice';
+import simpleTodoSlice from '../redux/store/simpleTodoSlice';
 import { NotesRepository } from '../repositories/NotesRepository';
+import todoRegistry from '../redux/registry/todoRegistry';
 
 // Create repositories
 const notesRepository = new NotesRepository();
@@ -9,12 +11,14 @@ const notesRepository = new NotesRepository();
 export const store = configureStore({
   reducer: {
     notes: notesSlice,
+    simpleTodo: simpleTodoSlice,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       thunk: {
         extraArgument: {
           notesRepository,
+          todoRegistry,
         },
       },
       serializableCheck: {

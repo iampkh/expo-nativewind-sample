@@ -1,208 +1,356 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, Alert, TouchableOpacity, ScrollView } from 'react-native';
 import { List } from '@/src/components/list';
 import { Button } from '@/src/components/themed';
+import { useAppDispatch, useAppSelector, store } from '@/src/store';
+import { selectFilteredTodos, selectLoading, selectError, selectFilter } from '@/src/redux/store/simpleTodoSlice';
+import { Todo, TodoStatus } from '@/src/storage/TodoStorage';
+import { todoRegistry } from '@/src/redux/registry/todoRegistry';
+import { TodoScreenUseCase } from '@/src/useCases/TodoScreenUseCase';
 
-// Sample data types
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  department: string;
-  role: string;
-  status: 'active' | 'inactive';
-}
+export default function TodoScreen() {
+  // Redux state and dispatch
+  const dispatch = useAppDispatch();
+  const todos = useAppSelector(selectFilteredTodos);
+  const loading = useAppSelector(selectLoading);
+  const error = useAppSelector(selectError);
+  const currentFilter = useAppSelector(selectFilter);
+  
+  // Todo form state
+  const [newTodoTitle, setNewTodoTitle] = useState('');
+  const [newTodoDescription, setNewTodoDescription] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
+  
+  // Use case instance
+  const todoScreenUseCaseRef = useRef<TodoScreenUseCase | null>(null);
+  
+  // Initialize use case
+  useEffect(() => {
+    const useCase = todoRegistry.getTodoScreenUseCase(dispatch, store.getState);
+    todoScreenUseCaseRef.current = useCase;
+    
+    // Initialize screen
+    useCase.initialize();
+    
+    return () => {
+      useCase.cleanup();
+    };
+  }, [dispatch]);
 
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  inStock: boolean;
-}
+  // Handle creating a new todo
+  const handleCreateTodo = async () => {
+    if (!newTodoTitle.trim()) {
+      Alert.alert('Error', 'Please enter a todo title');
+      return;
+    }
 
-// Sample data
-const sampleUsers: User[] = [
-  { id: '1', name: 'John Doe', email: 'john@example.com', department: 'Engineering', role: 'Developer', status: 'active' },
-  { id: '2', name: 'Jane Smith', email: 'jane@example.com', department: 'Engineering', role: 'Senior Developer', status: 'active' },
-  { id: '3', name: 'Mike Johnson', email: 'mike@example.com', department: 'Design', role: 'UI Designer', status: 'inactive' },
-  { id: '4', name: 'Sarah Wilson', email: 'sarah@example.com', department: 'Design', role: 'UX Designer', status: 'active' },
-  { id: '5', name: 'David Brown', email: 'david@example.com', department: 'Engineering', role: 'DevOps', status: 'active' },
-  { id: '6', name: 'Lisa Garcia', email: 'lisa@example.com', department: 'Marketing', role: 'Product Manager', status: 'active' },
-];
+    const todoData = {
+      title: newTodoTitle.trim(),
+      description: newTodoDescription.trim(),
+      date: new Date().toISOString().split('T')[0], // Current date
+      status: TodoStatus.open,
+    };
 
-const sampleProducts: Product[] = [
-  { id: '1', name: 'MacBook Pro', category: 'Laptops', price: 1999, inStock: true },
-  { id: '2', name: 'iPhone 15', category: 'Smartphones', price: 999, inStock: true },
-  { id: '3', name: 'iPad Air', category: 'Tablets', price: 599, inStock: false },
-  { id: '4', name: 'Dell XPS 13', category: 'Laptops', price: 1299, inStock: true },
-  { id: '5', name: 'Samsung Galaxy S24', category: 'Smartphones', price: 899, inStock: true },
-  { id: '6', name: 'Microsoft Surface', category: 'Tablets', price: 799, inStock: false },
-];
-
-export default function ListExample() {
-  const [currentExample, setCurrentExample] = useState<'simple-users' | 'grouped-users' | 'simple-products' | 'grouped-products'>('simple-users');
-
-  // Render functions for different item types
-  const renderUserItem = (user: User, index: number) => (
-    <View className="px-4 py-3 flex-row items-center justify-between">
-      <View className="flex-1">
-        <Text className="text-base font-medium text-gray-900 dark:text-white">
-          {user.name}
-        </Text>
-        <Text className="text-sm text-gray-600 dark:text-gray-400">
-          {user.email} • {user.role}
-        </Text>
-      </View>
-      <View className={`px-2 py-1 rounded-full ${user.status === 'active' ? 'bg-green-100' : 'bg-gray-100'}`}>
-        <Text className={`text-xs ${user.status === 'active' ? 'text-green-800' : 'text-gray-800'}`}>
-          {user.status}
-        </Text>
-      </View>
-    </View>
-  );
-
-  const renderProductItem = (product: Product, index: number) => (
-    <View className="px-4 py-3 flex-row items-center justify-between">
-      <View className="flex-1">
-        <Text className="text-base font-medium text-gray-900 dark:text-white">
-          {product.name}
-        </Text>
-        <Text className="text-sm text-gray-600 dark:text-gray-400">
-          ${product.price.toLocaleString()}
-        </Text>
-      </View>
-      <View className={`px-2 py-1 rounded-full ${product.inStock ? 'bg-blue-100' : 'bg-red-100'}`}>
-        <Text className={`text-xs ${product.inStock ? 'text-blue-800' : 'text-red-800'}`}>
-          {product.inStock ? 'In Stock' : 'Out of Stock'}
-        </Text>
-      </View>
-    </View>
-  );
-
-  // Group header render functions
-  const renderDepartmentHeader = (department: string, users: User[]) => (
-    <View className="px-4 py-3 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-      <Text className="text-sm font-semibold text-gray-700 dark:text-gray-300 uppercase tracking-wide">
-        {department} ({users.length} {users.length === 1 ? 'person' : 'people'})
-      </Text>
-    </View>
-  );
-
-  const renderCategoryHeader = (category: string, products: Product[]) => (
-    <View className="px-4 py-3 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
-      <Text className="text-sm font-semibold text-blue-700 dark:text-blue-300 uppercase tracking-wide">
-        {category} ({products.length} {products.length === 1 ? 'item' : 'items'})
-      </Text>
-    </View>
-  );
-
-  const renderCurrentList = () => {
-    switch (currentExample) {
-      case 'simple-users':
-        return (
-          <List
-            variant="simple"
-            data={sampleUsers}
-            renderItem={renderUserItem}
-            keyExtractor={(user) => user.id}
-            showSeparator={true}
-            className="flex-1"
-            contentContainerClassName="bg-white dark:bg-gray-900 rounded-lg shadow-sm"
-          />
-        );
-
-      case 'grouped-users':
-        return (
-          <List
-            variant="grouped"
-            data={sampleUsers}
-            renderItem={renderUserItem}
-            keyExtractor={(user) => user.id}
-            groupBy={(user) => user.department}
-            renderGroupHeader={renderDepartmentHeader}
-            showSeparator={true}
-            className="flex-1"
-            contentContainerClassName="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden"
-          />
-        );
-
-      case 'simple-products':
-        return (
-          <List
-            variant="simple"
-            data={sampleProducts}
-            renderItem={renderProductItem}
-            keyExtractor={(product) => product.id}
-            showSeparator={true}
-            className="flex-1"
-            contentContainerClassName="bg-white dark:bg-gray-900 rounded-lg shadow-sm"
-          />
-        );
-
-      case 'grouped-products':
-        return (
-          <List
-            variant="grouped"
-            data={sampleProducts}
-            renderItem={renderProductItem}
-            keyExtractor={(product) => product.id}
-            groupBy={(product) => product.category}
-            renderGroupHeader={renderCategoryHeader}
-            showSeparator={true}
-            className="flex-1"
-            contentContainerClassName="bg-white dark:bg-gray-900 rounded-lg shadow-sm overflow-hidden"
-          />
-        );
+    try {
+      const result = await todoScreenUseCaseRef.current?.execute('createTodo', todoData);
+      if (result?.success) {
+        setNewTodoTitle('');
+        setNewTodoDescription('');
+        setShowAddForm(false);
+        Alert.alert('Success', 'Todo created successfully!');
+      } else {
+        Alert.alert('Error', result?.error || 'Failed to create todo');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to create todo');
     }
   };
 
-  return (
-    <View className="flex-1 bg-gray-100 dark:bg-gray-900">
-      {/* Example selector buttons */}
-      <View className="p-4">
-        <View className="flex-row flex-wrap gap-2 mb-4">
-          <Button
-            title="Simple Users"
-            variant={currentExample === 'simple-users' ? 'primary' : 'outline'}
-            size="sm"
-            onPress={() => setCurrentExample('simple-users')}
-          />
-          <Button
-            title="Grouped Users"
-            variant={currentExample === 'grouped-users' ? 'primary' : 'outline'}
-            size="sm"
-            onPress={() => setCurrentExample('grouped-users')}
-          />
-          <Button
-            title="Simple Products"
-            variant={currentExample === 'simple-products' ? 'primary' : 'outline'}
-            size="sm"
-            onPress={() => setCurrentExample('simple-products')}
-          />
-          <Button
-            title="Grouped Products"
-            variant={currentExample === 'grouped-products' ? 'primary' : 'outline'}
-            size="sm"
-            onPress={() => setCurrentExample('grouped-products')}
-          />
-        </View>
+  // Handle status change
+  const handleStatusChange = async (todoId: string, newStatus: TodoStatus) => {
+    try {
+      const result = await todoScreenUseCaseRef.current?.execute('updateStatus', todoId, newStatus);
+      if (!result?.success) {
+        Alert.alert('Error', result?.error || 'Failed to update todo status');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to update todo status');
+    }
+  };
 
-        {/* Current example description */}
-        <View className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-          <Text className="text-sm text-blue-800 dark:text-blue-200">
-            {currentExample === 'simple-users' && 'Simple list of users without grouping'}
-            {currentExample === 'grouped-users' && 'Users grouped by department with custom headers'}
-            {currentExample === 'simple-products' && 'Simple list of products without grouping'}
-            {currentExample === 'grouped-products' && 'Products grouped by category with custom headers'}
+  // Handle delete todo
+  const handleDeleteTodo = async (todoId: string) => {
+    Alert.alert(
+      'Delete Todo',
+      'Are you sure you want to delete this todo?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              const result = await todoScreenUseCaseRef.current?.execute('deleteTodo', todoId);
+              if (result?.success) {
+                Alert.alert('Success', 'Todo deleted successfully!');
+              } else {
+                Alert.alert('Error', result?.error || 'Failed to delete todo');
+              }
+            } catch (error) {
+              Alert.alert('Error', 'Failed to delete todo');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  // Handle filter change
+  const handleFilterChange = (filter: 'all' | 'open' | 'started' | 'completed') => {
+    todoScreenUseCaseRef.current?.execute('setFilter', filter);
+  };
+
+  // Handle refresh
+  const handleRefresh = () => {
+    todoScreenUseCaseRef.current?.execute('loadTodos', { refresh: true });
+  };
+
+  // Get todo stats
+  const stats = todoScreenUseCaseRef.current?.getTodosStats() || {
+    total: 0,
+    open: 0,
+    started: 0,
+    completed: 0,
+  };
+
+  // Render todo item
+  const renderTodoItem = (todo: Todo, index: number) => (
+    <View className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+      <View className="flex-row items-start justify-between mb-2">
+        <View className="flex-1 pr-3">
+          <Text className="text-base font-medium text-gray-900 dark:text-white">
+            {todo.title}
+          </Text>
+          {todo.description && (
+            <Text className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              {todo.description}
+            </Text>
+          )}
+          <Text className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+            {new Date(todo.date).toLocaleDateString()}
           </Text>
         </View>
-
-        {/* List container */}
-        <View className="flex-1">
-          {renderCurrentList()}
-        </View>
+        
+        <TouchableOpacity
+          onPress={() => handleDeleteTodo(todo.id)}
+          className="px-2 py-1 bg-red-100 rounded-md"
+        >
+          <Text className="text-xs text-red-700">Delete</Text>
+        </TouchableOpacity>
       </View>
+      
+      <View className="flex-row gap-2">
+        <TouchableOpacity
+          onPress={() => handleStatusChange(todo.id, TodoStatus.open)}
+          className={`px-3 py-1 rounded-full ${
+            todo.status === TodoStatus.open ? 'bg-gray-200' : 'bg-gray-100'
+          }`}
+        >
+          <Text className={`text-xs ${
+            todo.status === TodoStatus.open ? 'text-gray-800 font-medium' : 'text-gray-600'
+          }`}>
+            Open
+          </Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          onPress={() => handleStatusChange(todo.id, TodoStatus.started)}
+          className={`px-3 py-1 rounded-full ${
+            todo.status === TodoStatus.started ? 'bg-blue-200' : 'bg-gray-100'
+          }`}
+        >
+          <Text className={`text-xs ${
+            todo.status === TodoStatus.started ? 'text-blue-800 font-medium' : 'text-gray-600'
+          }`}>
+            Started
+          </Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          onPress={() => handleStatusChange(todo.id, TodoStatus.completed)}
+          className={`px-3 py-1 rounded-full ${
+            todo.status === TodoStatus.completed ? 'bg-green-200' : 'bg-gray-100'
+          }`}
+        >
+          <Text className={`text-xs ${
+            todo.status === TodoStatus.completed ? 'text-green-800 font-medium' : 'text-gray-600'
+          }`}>
+            Completed
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  return (
+    <View className="flex-1 bg-gray-100 dark:bg-gray-900">
+      <ScrollView className="flex-1">
+        {/* Header */}
+        <View className="p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+          <Text className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Todo Manager
+          </Text>
+          
+          {/* Stats */}
+          <View className="flex-row gap-4 mb-4">
+            <View className="items-center">
+              <Text className="text-lg font-bold text-gray-900 dark:text-white">{stats.total}</Text>
+              <Text className="text-xs text-gray-600 dark:text-gray-400">Total</Text>
+            </View>
+            <View className="items-center">
+              <Text className="text-lg font-bold text-gray-600 dark:text-gray-300">{stats.open}</Text>
+              <Text className="text-xs text-gray-600 dark:text-gray-400">Open</Text>
+            </View>
+            <View className="items-center">
+              <Text className="text-lg font-bold text-blue-600 dark:text-blue-400">{stats.started}</Text>
+              <Text className="text-xs text-gray-600 dark:text-gray-400">Started</Text>
+            </View>
+            <View className="items-center">
+              <Text className="text-lg font-bold text-green-600 dark:text-green-400">{stats.completed}</Text>
+              <Text className="text-xs text-gray-600 dark:text-gray-400">Completed</Text>
+            </View>
+          </View>
+
+          {/* Action Buttons */}
+          <View className="flex-row gap-2 mb-4">
+            <TouchableOpacity
+              onPress={() => setShowAddForm(!showAddForm)}
+              className="flex-1 bg-green-600 rounded-lg px-4 py-2 flex-row items-center justify-center"
+            >
+              <Text className="text-white font-medium mr-2">
+                {showAddForm ? 'Hide Form' : 'Add Todo'}
+              </Text>
+              <Text className="text-white text-lg">{showAddForm ? '−' : '+'}</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              onPress={handleRefresh}
+              className="bg-blue-600 rounded-lg px-4 py-2"
+            >
+              <Text className="text-white font-medium">Refresh</Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Filter Buttons */}
+          <View className="flex-row gap-2">
+            {(['all', 'open', 'started', 'completed'] as const).map((filter) => (
+              <TouchableOpacity
+                key={filter}
+                onPress={() => handleFilterChange(filter)}
+                className={`px-3 py-1 rounded-full ${
+                  currentFilter === filter 
+                    ? 'bg-blue-600' 
+                    : 'bg-gray-200 dark:bg-gray-600'
+                }`}
+              >
+                <Text className={`text-sm capitalize ${
+                  currentFilter === filter 
+                    ? 'text-white font-medium' 
+                    : 'text-gray-700 dark:text-gray-300'
+                }`}>
+                  {filter}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Add Todo Form */}
+        {showAddForm && (
+          <View className="p-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+            <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+              Add New Todo
+            </Text>
+            
+            <TextInput
+              value={newTodoTitle}
+              onChangeText={setNewTodoTitle}
+              placeholder="Todo title *"
+              className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700"
+              placeholderTextColor="#9CA3AF"
+            />
+            
+            <TextInput
+              value={newTodoDescription}
+              onChangeText={setNewTodoDescription}
+              placeholder="Description (optional)"
+              multiline
+              numberOfLines={3}
+              className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-3 text-gray-900 dark:text-white bg-white dark:bg-gray-700"
+              placeholderTextColor="#9CA3AF"
+              textAlignVertical="top"
+            />
+            
+            <View className="flex-row gap-2">
+              <TouchableOpacity
+                onPress={handleCreateTodo}
+                disabled={loading}
+                className="flex-1 bg-blue-600 rounded-lg py-3 items-center"
+              >
+                <Text className="text-white font-medium">
+                  {loading ? 'Creating...' : 'Create Todo'}
+                </Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                onPress={() => {
+                  setShowAddForm(false);
+                  setNewTodoTitle('');
+                  setNewTodoDescription('');
+                }}
+                className="px-4 bg-gray-200 dark:bg-gray-600 rounded-lg py-3 items-center"
+              >
+                <Text className="text-gray-700 dark:text-gray-300 font-medium">Cancel</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
+
+        {/* Todo List */}
+        <View className="flex-1 bg-white dark:bg-gray-900">
+          {loading && todos.length === 0 ? (
+            <View className="flex-1 items-center justify-center p-8">
+              <Text className="text-gray-600 dark:text-gray-400">Loading todos...</Text>
+            </View>
+          ) : todos.length === 0 ? (
+            <View className="flex-1 items-center justify-center p-8">
+              <Text className="text-gray-600 dark:text-gray-400 mb-4">No todos yet</Text>
+              <TouchableOpacity
+                onPress={() => setShowAddForm(true)}
+                className="bg-blue-600 rounded-lg px-4 py-2"
+              >
+                <Text className="text-white font-medium">Add First Todo</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <List
+              variant="simple"
+              data={todos}
+              renderItem={renderTodoItem}
+              keyExtractor={(todo) => todo.id}
+              showSeparator={false}
+              className="flex-1"
+              contentContainerClassName="bg-white dark:bg-gray-900"
+            />
+          )}
+
+          {error && (
+            <View className="p-4 bg-red-50 dark:bg-red-900/20">
+              <Text className="text-red-700 dark:text-red-300">{error}</Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
     </View>
   );
 }
