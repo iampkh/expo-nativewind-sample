@@ -42,6 +42,10 @@ target 'exponativewindsample' do
     :privacy_file_aggregation_enabled => podfile_properties['apple.privacyManifestAggregationEnabled'] != 'false',
   )
 
+  
+
+  pod 'simdjson', path: File.join(File.dirname(`node --print "require.resolve('@nozbe/simdjson/package.json')"`)), :modular_headers => true 
+
   post_install do |installer|
     react_native_post_install(
       installer,

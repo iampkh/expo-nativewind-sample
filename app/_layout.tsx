@@ -7,6 +7,7 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/src/hooks/useColorScheme';
 import { AppProviders } from '@/src/providers/AppProviders';
+import { testWatermelonDB } from '@/src/storage';
 import "../global.css";
 
 export default function RootLayout() {
@@ -14,6 +15,14 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
+
+  useEffect(() => {
+    if (loaded) {
+      // Test WatermelonDB when app launches
+      console.log('🚀 [App] App loaded, testing WatermelonDB...')
+      testWatermelonDB()
+    }
+  }, [loaded]);
 
   if (!loaded) {
     // Async font loading only occurs in development.

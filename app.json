@@ -28,6 +28,7 @@
     },
     "plugins": [
       "expo-router",
+      "@morrowdigital/watermelondb-expo-plugin",
       [
         "expo-splash-screen",
         {
