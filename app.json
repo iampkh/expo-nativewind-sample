@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.anonymous.exponativewindsample"
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +18,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "allowBackup": false
+      "allowBackup": false,
+      "package": "com.anonymous.exponativewindsample"
     },
     "web": {
       "bundler": "metro",
@@ -33,17 +35,6 @@
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
-        }
-      ],
-      [
-        "expo-build-properties",
-        {
-          "android": {
-            "kotlinVersion": "1.8.0",
-            "packagingOptions": {
-              "pickFirst": ["**/libc++_shared.so"]
-            }
-          }
         }
       ]
     ],
