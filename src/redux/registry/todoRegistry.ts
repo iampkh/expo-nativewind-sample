@@ -1,8 +1,9 @@
-import { TodoRepository } from '../../repositories/TodoRepository';
 import { TodoInteractor } from '../../interactors/TodoInteractor';
-import { BaseRemoteDataStore } from '../../remoteDataStores/BaseRemoteDataStore';
-import { TodoScreenUseCase } from '../../useCases/TodoScreenUseCase';
+import { HttpRemoteDataStore } from '../../remoteDataStores/BaseRemoteDataStore';
+import { BaseRemoteDataStore } from '../../remoteDataStores/types';
+import { TodoRepository } from '../../repositories/TodoRepository';
 import { SimpleTodoUseCase } from '../../useCases/SimpleTodoUseCase';
+import { TodoScreenUseCase } from '../../useCases/TodoScreenUseCase';
 import { UseCaseContext } from '../../useCases/types';
 
 class TodoRegistry {
@@ -24,10 +25,9 @@ class TodoRegistry {
 
   public getRemoteDataStore(): BaseRemoteDataStore {
     if (!this._remoteDataStore) {
-      this._remoteDataStore = new BaseRemoteDataStore({
-        baseURL: process.env.API_BASE_URL || 'http://localhost:3000/api',
-        timeout: 10000,
-      });
+      this._remoteDataStore = new HttpRemoteDataStore(
+        process.env.API_BASE_URL || 'http://localhost:3000/api'
+      );
     }
     return this._remoteDataStore;
   }
@@ -57,7 +57,7 @@ class TodoRegistry {
     if (!this._simpleTodoUseCase) {
       // Create a mock context since we're not using Redux dispatch in this use case
       const context: UseCaseContext = {
-        dispatch: () => {},
+        dispatch: (() => {}) as any,
         getState: () => ({} as any),
         repositories: {
           todoRepository: this.getTodoRepository()

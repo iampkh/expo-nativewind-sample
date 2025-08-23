@@ -73,6 +73,7 @@ export default function NotesScreen() {
     notesUseCase.execute('setView', view);
   };
 
+
   const ViewButton = ({ 
     view, 
     label, 

@@ -18,9 +18,19 @@ export interface CacheStorage {
   clear(): Promise<void>
 }
 
-export interface SQLiteStorage {
-  query(sql: string, params?: any[]): Promise<any[]>
-  execute(sql: string, params?: any[]): Promise<void>
+
+export interface SqliteStorage {
+  createTodo(todoData: any): Promise<DatabaseResult<any>>
+  getTodo(id: string): Promise<DatabaseResult<any>>
+  updateTodo(id: string, updates: any): Promise<DatabaseResult<any>>
+  deleteTodo(id: string): Promise<DatabaseResult<boolean>>
+  getAllTodos(): Promise<DatabaseResult<any[]>>
+  getTodosByStatus(status: any): Promise<DatabaseResult<any[]>>
+  getTodosByDate(date: string): Promise<DatabaseResult<any[]>>
+  markAsCompleted(id: string): Promise<DatabaseResult<any>>
+  markAsStarted(id: string): Promise<DatabaseResult<any>>
+  markAsOpen(id: string): Promise<DatabaseResult<any>>
+  disconnect(): Promise<void>
 }
 
 export interface RemoteStorage {

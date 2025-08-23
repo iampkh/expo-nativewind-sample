@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import { SQLiteStorage, DatabaseResult } from '../types/database.types';
+import { SqliteStorage, DatabaseResult } from '../types/database.types';
 
 export enum TodoStatus {
   open = 'open',
@@ -17,13 +16,11 @@ export interface Todo {
   updatedAt: string;
 }
 
-export class TodoStorage implements SQLiteStorage {
+export class TodoStorage implements SqliteStorage {
   private static instance: TodoStorage;
-  private prisma: PrismaClient;
+  private todos: Todo[] = [];
 
-  private constructor() {
-    this.prisma = new PrismaClient();
-  }
+  private constructor() {}
 
   public static getInstance(): TodoStorage {
     if (!TodoStorage.instance) {
@@ -32,40 +29,17 @@ export class TodoStorage implements SQLiteStorage {
     return TodoStorage.instance;
   }
 
-  async query(sql: string, params?: any[]): Promise<any[]> {
-    try {
-      const result = await this.prisma.$queryRawUnsafe(sql, ...(params || []));
-      return Array.isArray(result) ? result : [result];
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async execute(sql: string, params?: any[]): Promise<void> {
-    try {
-      await this.prisma.$executeRawUnsafe(sql, ...(params || []));
-    } catch (error) {
-      throw error;
-    }
-  }
-
   async createTodo(todoData: Omit<Todo, 'id' | 'createdAt' | 'updatedAt'>): Promise<DatabaseResult<Todo>> {
     try {
-      const id = Date.now().toString();
       const now = new Date().toISOString();
-      
       const newTodo: Todo = {
+        id: Math.random().toString(36).substr(2, 9),
         ...todoData,
-        id,
         createdAt: now,
         updatedAt: now,
       };
 
-      await this.execute(
-        'INSERT INTO todos (id, title, description, date, status, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [newTodo.id, newTodo.title, newTodo.description, newTodo.date, newTodo.status, newTodo.createdAt, newTodo.updatedAt]
-      );
-
+      this.todos.push(newTodo);
       return { success: true, data: newTodo };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
@@ -74,13 +48,11 @@ export class TodoStorage implements SQLiteStorage {
 
   async getTodo(id: string): Promise<DatabaseResult<Todo>> {
     try {
-      const results = await this.query('SELECT * FROM todos WHERE id = ?', [id]);
-      
-      if (results.length === 0) {
+      const todo = this.todos.find(t => t.id === id);
+      if (!todo) {
         return { success: false, error: 'Todo not found' };
       }
-
-      return { success: true, data: results[0] as Todo };
+      return { success: true, data: todo };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
@@ -88,18 +60,19 @@ export class TodoStorage implements SQLiteStorage {
 
   async updateTodo(id: string, updates: Partial<Omit<Todo, 'id' | 'createdAt'>>): Promise<DatabaseResult<Todo>> {
     try {
-      const updatedAt = new Date().toISOString();
-      const updateFields = { ...updates, updatedAt };
-      const setClause = Object.keys(updateFields).map(key => `${key} = ?`).join(', ');
-      const values = [...Object.values(updateFields), id];
+      const todoIndex = this.todos.findIndex(t => t.id === id);
+      if (todoIndex === -1) {
+        return { success: false, error: 'Todo not found' };
+      }
 
-      await this.execute(
-        `UPDATE todos SET ${setClause} WHERE id = ?`,
-        values
-      );
+      const updatedTodo = {
+        ...this.todos[todoIndex],
+        ...updates,
+        updatedAt: new Date().toISOString(),
+      };
 
-      const updatedTodo = await this.getTodo(id);
-      return updatedTodo;
+      this.todos[todoIndex] = updatedTodo;
+      return { success: true, data: updatedTodo };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
@@ -107,7 +80,12 @@ export class TodoStorage implements SQLiteStorage {
 
   async deleteTodo(id: string): Promise<DatabaseResult<boolean>> {
     try {
-      await this.execute('DELETE FROM todos WHERE id = ?', [id]);
+      const todoIndex = this.todos.findIndex(t => t.id === id);
+      if (todoIndex === -1) {
+        return { success: false, error: 'Todo not found' };
+      }
+
+      this.todos.splice(todoIndex, 1);
       return { success: true, data: true };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
@@ -116,8 +94,10 @@ export class TodoStorage implements SQLiteStorage {
 
   async getAllTodos(): Promise<DatabaseResult<Todo[]>> {
     try {
-      const results = await this.query('SELECT * FROM todos ORDER BY createdAt DESC');
-      return { success: true, data: results as Todo[] };
+      const sortedTodos = [...this.todos].sort((a, b) => 
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
+      return { success: true, data: sortedTodos };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
@@ -125,8 +105,11 @@ export class TodoStorage implements SQLiteStorage {
 
   async getTodosByStatus(status: TodoStatus): Promise<DatabaseResult<Todo[]>> {
     try {
-      const results = await this.query('SELECT * FROM todos WHERE status = ? ORDER BY createdAt DESC', [status]);
-      return { success: true, data: results as Todo[] };
+      const filteredTodos = this.todos
+        .filter(todo => todo.status === status)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      
+      return { success: true, data: filteredTodos };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
@@ -134,8 +117,11 @@ export class TodoStorage implements SQLiteStorage {
 
   async getTodosByDate(date: string): Promise<DatabaseResult<Todo[]>> {
     try {
-      const results = await this.query('SELECT * FROM todos WHERE date = ? ORDER BY createdAt DESC', [date]);
-      return { success: true, data: results as Todo[] };
+      const filteredTodos = this.todos
+        .filter(todo => todo.date === date)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      
+      return { success: true, data: filteredTodos };
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
@@ -154,6 +140,6 @@ export class TodoStorage implements SQLiteStorage {
   }
 
   async disconnect(): Promise<void> {
-    await this.prisma.$disconnect();
+    return Promise.resolve();
   }
 }

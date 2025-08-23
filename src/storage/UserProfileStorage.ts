@@ -1,4 +1,4 @@
-import { SQLiteStorage, DatabaseResult } from '../types/database.types';
+import { DatabaseResult } from '../types/database.types';
 
 export interface UserProfile {
   id: string;
@@ -9,7 +9,7 @@ export interface UserProfile {
   updatedAt: string;
 }
 
-export class UserProfileStorage implements SQLiteStorage {
+export class UserProfileStorage {
   async query(sql: string, params?: any[]): Promise<any[]> {
     throw new Error('Method not implemented.');
   }
