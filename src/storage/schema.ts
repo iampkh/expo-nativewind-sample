@@ -15,6 +15,18 @@ export default appSchema({
         { name: 'email', type: 'string' },
         { name: 'age', type: 'number' }
       ]
+    }),
+    // Todo schemas
+    tableSchema({
+      name: 'todos',
+      columns: [
+        { name: 'title', type: 'string' },
+        { name: 'description', type: 'string' },
+        { name: 'date', type: 'string' },
+        { name: 'status', type: 'string' },
+        { name: 'created_at', type: 'number' },
+        { name: 'updated_at', type: 'number' }
+      ]
     })
   ]
 })
