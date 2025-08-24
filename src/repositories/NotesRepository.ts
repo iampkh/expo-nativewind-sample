@@ -1,13 +1,18 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BaseRepository, FindAllParams } from './types';
 import { Note, CreateNoteData, UpdateNoteData, NotesFilter } from '../types/notes';
 import { BaseEntity } from '../store/types';
+import { LocalCache } from '../storage/cache/LocalCache';
 
 export class NotesRepository implements BaseRepository<Note> {
-  private static readonly STORAGE_KEY = '@notes_storage';
+  private static readonly STORAGE_KEY = 'notes_storage';
+  private localCache: LocalCache;
   private cache: Note[] | null = null;
   private cacheTimestamp: number = 0;
   private readonly cacheTTL = 5 * 60 * 1000; // 5 minutes
+
+  constructor() {
+    this.localCache = new LocalCache('notes_');
+  }
 
   private generateId(): string {
     return `note_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -32,8 +37,7 @@ export class NotesRepository implements BaseRepository<Note> {
         return this.cache!;
       }
 
-      const data = await AsyncStorage.getItem(NotesRepository.STORAGE_KEY);
-      const notes = data ? JSON.parse(data) : [];
+      const notes = await this.localCache.getObject<Note[]>(NotesRepository.STORAGE_KEY) || [];
       
       this.cache = notes;
       this.cacheTimestamp = Date.now();
@@ -47,7 +51,7 @@ export class NotesRepository implements BaseRepository<Note> {
 
   private async saveToStorage(notes: Note[]): Promise<void> {
     try {
-      await AsyncStorage.setItem(NotesRepository.STORAGE_KEY, JSON.stringify(notes));
+      await this.localCache.setObject(NotesRepository.STORAGE_KEY, notes);
       this.cache = notes;
       this.cacheTimestamp = Date.now();
     } catch (error) {
