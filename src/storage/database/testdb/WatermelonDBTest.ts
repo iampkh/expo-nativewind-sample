@@ -1,7 +1,7 @@
-import { database } from './database'
-import { TestUser } from './models'
+import TestUser from './models/TestUser'
 
 export async function testWatermelonDB() {
+  const { database } = await import('../../database');
   try {
     console.log('🔍 [WatermelonDB] Starting database test...')
     

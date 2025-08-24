@@ -1,8 +1,8 @@
 import { Database } from '@nozbe/watermelondb'
 import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
 import { schemaMigrations } from '@nozbe/watermelondb/Schema/migrations'
+import { TestUser } from './database/testdb'
 import schema from './schema'
-import { TestUser } from './models'
 
 const adapter = new SQLiteAdapter({
   schema,

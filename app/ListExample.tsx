@@ -4,7 +4,7 @@ import { List } from '@/src/components/list';
 import { Button } from '@/src/components/themed';
 import { useAppDispatch, useAppSelector, store } from '@/src/store';
 import { selectFilteredTodos, selectLoading, selectError, selectFilter } from '@/src/redux/store/simpleTodoSlice';
-import { Todo, TodoStatus } from '@/src/storage/TodoStorage';
+import { Todo, TodoStatus } from '@/src/storage';
 import { todoRegistry } from '@/src/redux/registry/todoRegistry';
 import { TodoScreenUseCase } from '@/src/useCases/TodoScreenUseCase';
 

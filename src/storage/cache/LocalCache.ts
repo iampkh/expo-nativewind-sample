@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { CacheStorage } from '../types/database.types';
+import { CacheStorage } from '../../types/database.types';
 
 export class LocalCache implements CacheStorage {
   private prefix: string;

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { CreateTodoRequest, UpdateTodoRequest } from '../../interactors/TodoInteractor';
-import { Todo, TodoStatus } from '../../storage/TodoStorage';
+import { Todo, TodoStatus } from '../../storage';
 import { DatabaseResult } from '../../types/database.types';
 import { SimpleTodoUseCase } from '../../useCases/SimpleTodoUseCase';
 import todoRegistry from '../registry/todoRegistry';

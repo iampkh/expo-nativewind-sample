@@ -14,7 +14,7 @@ import {
   fetchStartedTodosThunk,
   fetchCompletedTodosThunk,
 } from '../thunk/simpleTodoThunk';
-import { Todo, TodoStatus } from '../../storage/TodoStorage';
+import { Todo, TodoStatus } from '../../storage';
 
 export interface TodoState {
   todos: Todo[];

@@ -1,7 +1,7 @@
 import { AbstractScreenUseCase } from './BaseScreenUseCase';
 import { UseCaseContext, UseCaseResult } from './types';
 import { TodoInteractor, CreateTodoRequest, UpdateTodoRequest } from '../interactors/TodoInteractor';
-import { Todo, TodoStatus } from '../storage/TodoStorage';
+import { Todo, TodoStatus } from '../storage';
 import { DatabaseResult } from '../types/database.types';
 import { 
   createTodoThunk, 

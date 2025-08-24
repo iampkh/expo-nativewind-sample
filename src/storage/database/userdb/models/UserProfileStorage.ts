@@ -1,4 +1,4 @@
-import { DatabaseResult } from '../types/database.types';
+import { DatabaseResult } from '../../../../types/database.types';
 
 export interface UserProfile {
   id: string;

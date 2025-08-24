@@ -1,13 +1,8 @@
 import { appSchema, tableSchema } from '@nozbe/watermelondb'
 
-/**
- * Main WatermelonDB schema aggregating all database schemas
- * When adding new databases, import their schemas and add to tables array
- */
 export default appSchema({
   version: 1,
   tables: [
-    // TestDB schemas
     tableSchema({
       name: 'test_users',
       columns: [

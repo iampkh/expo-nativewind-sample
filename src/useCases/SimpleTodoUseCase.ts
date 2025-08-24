@@ -1,5 +1,5 @@
 import { CreateTodoRequest, TodoInteractor, UpdateTodoRequest } from '../interactors/TodoInteractor';
-import { Todo, TodoStatus } from '../storage/TodoStorage';
+import { Todo, TodoStatus } from '../storage';
 import { DatabaseResult } from '../types/database.types';
 import { AbstractBaseUseCase } from './BaseUseCase';
 import { UseCaseContext } from './types';

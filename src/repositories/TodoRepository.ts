@@ -1,7 +1,7 @@
 import { AbstractBaseRepository } from './BaseRepository';
 import { BaseRemoteDataStore } from '../remoteDataStores/types';
 import { RepositoryConfig } from './types';
-import { Todo, TodoStorage, TodoStatus } from '../storage/TodoStorage';
+import { Todo, TodoStorage, TodoStatus } from '../storage';
 import { DatabaseResult } from '../types/database.types';
 
 export interface TodoEntity extends Todo {

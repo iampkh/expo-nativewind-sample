@@ -1,5 +1,5 @@
 import { TodoRepository } from '../repositories/TodoRepository';
-import { Todo, TodoStatus } from '../storage/TodoStorage';
+import { Todo, TodoStatus } from '../storage';
 import { DatabaseResult } from '../types/database.types';
 
 export interface CreateTodoRequest {
