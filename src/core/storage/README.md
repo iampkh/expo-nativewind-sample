@@ -1,11 +1,11 @@
-# Storage Architecture for Scalable Apps
+# Core Storage Architecture
 
-This directory contains a well-organized storage architecture designed for large applications with multiple databases, local caching, and backend synchronization needs.
+This directory contains the core storage infrastructure for the modular application architecture. It provides database management, caching, and data persistence services that are used across all feature modules.
 
 ## 📁 Directory Structure
 
 ```
-src/storage/
+src/core/storage/
 ├── README.md                    # This documentation
 ├── database.ts                  # Main WatermelonDB configuration
 ├── schema.ts                    # Aggregated schema from all databases
@@ -22,11 +22,11 @@ src/storage/
     │   ├── schema/            # Database schemas
     │   │   └── testUserSchema.ts # TestUser schema
     │   └── WatermelonDBTest.ts # Testing functions
-    ├── todoapp/               # Todo application database
-    │   ├── index.ts          # TodoApp exports
-    │   ├── models/           # Todo models
-    │   │   └── TodoStorage.ts # Todo storage implementation
-    │   └── schema/           # Todo schemas (future)
+    ├── TodoStorage.ts         # Todo storage implementation (core)
+    ├── models/                # Core database models
+    │   ├── Todo.ts           # Todo interface and types
+    │   ├── TodoModel.ts      # WatermelonDB Todo model
+    │   └── index.ts          # Model exports
     └── userdb/               # User database
         ├── index.ts          # UserDB exports
         ├── models/           # User models
@@ -210,16 +210,24 @@ src/storage/database/userdb/UserProfileStorage.test.ts
 
 ## 💡 Usage Patterns
 
-### Import from Main Storage (Recommended)
+### Import from Core Storage (Recommended)
 ```typescript
-import { TestUser, TodoStorage, LocalCache, testWatermelonDB } from '@/src/storage'
+import { TestUser, TodoStorage, LocalCache, testWatermelonDB } from '@/src/core/storage'
 ```
 
 ### Import from Specific Database (For Database-Specific Operations)
 ```typescript
-import { TestUser, testWatermelonDB } from '@/src/storage/database/testdb'
-import { TodoStorage } from '@/src/storage/database/todoapp'
-import { LocalCache } from '@/src/storage/cache'
+import { TestUser, testWatermelonDB } from '@/src/core/storage/database/testdb'
+import { TodoStorage } from '@/src/core/storage/database/TodoStorage'
+import { LocalCache } from '@/src/core/storage/cache'
+```
+
+### Module Usage
+Modules should import storage services through the core layer:
+```typescript
+// From a module (e.g., src/modules/todo/)
+import { TodoStorage, Todo, TodoStatus } from '@/src/core/storage'
+import { DatabaseResult } from '@/src/shared/types/database.types'
 ```
 
 ## 🎉 Benefits
