@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { ScrollView, TextInput, Alert } from 'react-native';
 import { router } from 'expo-router';
-import { Text, View, Button } from '@/src/components/themed';
-import { ListItem } from '@/src/components/list';
-import { useTheme } from '@/src/hooks/useTheme';
+import { Text, View, Button } from '@/src/shared/components/themed';
+import { ListItem } from '@/src/shared/components/list';
+import { useTheme } from '@/src/shared/hooks/useTheme';
 import { useAppSelector } from '@/src/store';
 import { selectAllNotes, selectNotesLoading, selectNotesError, selectSelectedView, selectNotesStats } from '@/src/store/slices/notesSlice';
-import { NotesScreenUseCase } from '@/src/useCases/screens/NotesScreenUseCase';
-import { useScreenUseCase } from '@/src/providers/UseCaseProvider';
+import { NotesScreenUseCase } from '@/src/core/useCases/screens/NotesScreenUseCase';
+import { useScreenUseCase } from '@/src/shared/providers/UseCaseProvider';
 
 export default function NotesScreen() {
   const { currentTheme, setTheme } = useTheme();

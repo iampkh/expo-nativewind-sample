@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, TextInput, Alert, TouchableOpacity, ScrollView } from 'react-native';
-import { List } from '@/src/components/list';
-import { Button } from '@/src/components/themed';
+import { List } from '@/src/shared/components/list';
+import { Button } from '@/src/shared/components/themed';
 import { useAppDispatch, useAppSelector, store } from '@/src/store';
-import { selectFilteredTodos, selectLoading, selectError, selectFilter } from '@/src/redux/store/simpleTodoSlice';
-import { Todo, TodoStatus } from '@/src/storage';
-import { todoRegistry } from '@/src/redux/registry/todoRegistry';
-import { TodoScreenUseCase } from '@/src/useCases/TodoScreenUseCase';
+import { selectFilteredTodos, selectLoading, selectError, selectFilter } from '@/src/modules/todo/store/simpleTodoSlice';
+import { Todo, TodoStatus } from '@/src/core/storage';
+import { todoRegistry } from '@/src/modules/todo/store/todoRegistry';
+import { TodoScreenUseCase } from '@/src/modules/todo/useCases/TodoScreenUseCase';
 
 export default function TodoScreen() {
   // Redux state and dispatch

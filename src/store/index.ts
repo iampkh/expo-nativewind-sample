@@ -1,9 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 import notesSlice from './slices/notesSlice';
-import simpleTodoSlice from '../redux/store/simpleTodoSlice';
-import { NotesRepository } from '../repositories/NotesRepository';
-import todoRegistry from '../redux/registry/todoRegistry';
+import simpleTodoSlice from '../modules/todo/store/simpleTodoSlice';
+import { NotesRepository } from '../core/repositories/NotesRepository';
+import todoRegistry from '../modules/todo/store/todoRegistry';
 
 // Create repositories
 const notesRepository = new NotesRepository();

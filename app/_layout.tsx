@@ -5,9 +5,9 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/src/hooks/useColorScheme';
-import { AppProviders } from '@/src/providers/AppProviders';
-import { testWatermelonDB } from '@/src/storage';
+import { useColorScheme } from '@/src/shared/hooks/useColorScheme';
+import { AppProviders } from '@/src/shared/providers/AppProviders';
+import { testWatermelonDB } from '@/src/core/storage';
 import "../global.css";
 
 export default function RootLayout() {
