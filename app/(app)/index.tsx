@@ -133,6 +133,12 @@ export default function NotesScreen() {
               size="sm"
             />
             <Button
+              title="Grid Examples"
+              onPress={() => router.push('/GridExample')}
+              variant="secondary"
+              size="sm"
+            />
+            <Button
               title={currentTheme === 'dark' ? '☀️' : '🌙'}
               onPress={toggleDarkLight}
               variant="outline"

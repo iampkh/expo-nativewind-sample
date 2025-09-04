@@ -162,14 +162,45 @@ export interface GroupedListProps<T, K = string> extends BaseListProps<T> {
   groupHeaderClassName?: string;
 }
 
+/**
+ * Props for Grid List variant
+ * Use this when you want to display items in a grid layout with customizable columns
+ * @template T - The type of items in your data array
+ */
+export interface GridListProps<T> extends BaseListProps<T> {
+  /** Must be 'grid' to use this variant */
+  variant: 'grid';
+  
+  /** 
+   * Number of columns in the grid
+   * Default: 2
+   * Example: 3 for a 3-column grid
+   */
+  columns?: number;
+  
+  /** 
+   * CSS classes for spacing between items in the same row
+   * Default: "gap-2"
+   * Example: "gap-4" for more spacing, "gap-1" for less
+   */
+  itemSpacing?: string;
+  
+  /** 
+   * CSS classes for spacing between rows
+   * Default: "gap-2" 
+   * Example: "gap-4" for more spacing, "gap-1" for less
+   */
+  rowSpacing?: string;
+}
+
 /** Available variants for the List component */
-export type ListComponentVariant = 'simple' | 'grouped';
+export type ListComponentVariant = 'simple' | 'grouped' | 'grid';
 
 /** 
  * Union type of all possible List props
  * TypeScript will automatically infer which props are required based on the variant
  */
-export type ListProps<T, K = string> = SimpleListProps<T> | GroupedListProps<T, K>;
+export type ListProps<T, K = string> = SimpleListProps<T> | GroupedListProps<T, K> | GridListProps<T>;
 
 export interface ListItemProps extends BaseListItemProps {
   variant?: ListVariant;
