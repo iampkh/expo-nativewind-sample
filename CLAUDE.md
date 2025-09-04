@@ -11,6 +11,8 @@ This context file provides comprehensive guidelines for maintaining the clean mo
 - **State Management**: Redux Toolkit with module-specific slices
 - **Styling**: NativeWind (Tailwind CSS for React Native)
 - **Routing**: Expo Router (file-based)
+- **Android build**: use 'npx expo run:android' to run and install android build.
+- **Ios build**: use 'npx expo run:ios' to run and install ios build.
 
 ### Architecture Layers (Dependency Flow: Outer → Inner)
 ```

@@ -34,8 +34,15 @@ export default function RootLayout() {
       <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="login" options={{ headerShown: false }} />
+          <Stack.Screen name="(app)" options={{ headerShown: false }} />
           <Stack.Screen name="ListExample" options={{ 
             title: "List Examples",
+            headerShown: true,
+            presentation: 'card'
+          }} />
+          <Stack.Screen name="auth" options={{ 
+            title: "Authentication Test",
             headerShown: true,
             presentation: 'card'
           }} />
