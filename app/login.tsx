@@ -22,13 +22,6 @@ export default function LoginScreen() {
     dispatch(restoreSessionThunk());
   }, [dispatch]);
 
-  // Navigate to main app when authenticated
-  useEffect(() => {
-    if (isAuthenticated && user) {
-      router.replace('/');
-    }
-  }, [isAuthenticated, user]);
-
   const handleSubmit = async () => {
     if (isLogin) {
       // Login
@@ -38,19 +31,30 @@ export default function LoginScreen() {
       }));
       
       if (loginThunk.fulfilled.match(result)) {
-        Alert.alert('Success', `Welcome back, ${result.payload.user.name || result.payload.user.email}!`);
+        const userSession = result.payload as any;
+        const user = userSession.user || userSession;
+        Alert.alert(
+          'Login Success! ✅', 
+          `Authentication successful!\n\nUser: ${user.name || user.email}\nEmail: ${user.email}\n\nThis is a demo - login flow is working correctly.`,
+          [{ text: 'OK', onPress: () => console.log('Login demo completed') }]
+        );
       } else if (loginThunk.rejected.match(result)) {
-        Alert.alert('Login Failed', result.payload?.message || 'Please check your credentials');
+        const errorPayload = result.payload as any;
+        Alert.alert(
+          'Login Failed ❌', 
+          `Authentication failed.\n\nReason: ${errorPayload?.message || 'Invalid credentials'}\n\nTry: demo@example.com / Test123!@#`,
+          [{ text: 'Try Again', onPress: () => console.log('Login failed demo') }]
+        );
       }
     } else {
       // Signup
       if (password !== confirmPassword) {
-        Alert.alert('Error', 'Passwords do not match');
+        Alert.alert('Validation Error', 'Passwords do not match');
         return;
       }
       
       if (!name.trim()) {
-        Alert.alert('Error', 'Please enter your name');
+        Alert.alert('Validation Error', 'Please enter your name');
         return;
       }
       
@@ -63,9 +67,20 @@ export default function LoginScreen() {
       }));
       
       if (signupThunk.fulfilled.match(result)) {
-        Alert.alert('Success', `Welcome ${result.payload.user.name || result.payload.user.email}!`);
+        const userSession = result.payload as any;
+        const user = userSession.user || userSession;
+        Alert.alert(
+          'Signup Success! ✅',
+          `Account created successfully!\n\nUser: ${user.name || user.email}\nEmail: ${user.email}\n\nThis is a demo - signup flow is working correctly.`,
+          [{ text: 'OK', onPress: () => console.log('Signup demo completed') }]
+        );
       } else if (signupThunk.rejected.match(result)) {
-        Alert.alert('Registration Failed', result.payload?.message || 'Please try again');
+        const errorPayload = result.payload as any;
+        Alert.alert(
+          'Signup Failed ❌',
+          `Account creation failed.\n\nReason: ${errorPayload?.message || 'Please try again'}\n\nThis is a demo - check your input.`,
+          [{ text: 'Try Again', onPress: () => console.log('Signup failed demo') }]
+        );
       }
     }
   };
@@ -96,16 +111,27 @@ export default function LoginScreen() {
         >
           <View className="flex-1 justify-center p-6">
             {/* Header */}
-            <View className="items-center mb-8">
-              <Text variant="primary" size="2xl" className="font-bold text-center mb-2">
-                {isLogin ? 'Welcome Back' : 'Create Account'}
-              </Text>
-              <Text variant="secondary" size="base" className="text-center">
-                {isLogin 
-                  ? 'Sign in to continue to your account' 
-                  : 'Sign up to get started with your account'
-                }
-              </Text>
+            <View className="mb-8">
+              <View className="flex-row items-center justify-between mb-4">
+                <View className="flex-1" />
+                <TouchableOpacity
+                  onPress={() => router.push('/HomeScreen')}
+                  className="bg-card border border-border rounded-lg px-3 py-2"
+                >
+                  <Text variant="secondary" size="sm">← Home</Text>
+                </TouchableOpacity>
+              </View>
+              <View className="items-center">
+                <Text variant="primary" size="2xl" className="font-bold text-center mb-2">
+                  {isLogin ? 'Welcome Back' : 'Create Account'}
+                </Text>
+                <Text variant="secondary" size="base" className="text-center">
+                  {isLogin 
+                    ? 'Sign in to continue to your account' 
+                    : 'Sign up to get started with your account'
+                  }
+                </Text>
+              </View>
             </View>
 
             {/* Form Card */}
@@ -228,18 +254,19 @@ export default function LoginScreen() {
             </View>
 
             {/* Demo Credentials Info */}
-            <View className="mt-6 p-4 bg-yellow-50 rounded-xl mx-2">
-              <Text variant="secondary" size="sm" className="text-center mb-2 font-medium">
-                🧪 Demo Credentials (Pre-filled)
+            <View className="mt-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-xl mx-2 border border-blue-200 dark:border-blue-800">
+              <Text variant="primary" size="sm" className="text-center mb-3 font-semibold text-blue-700 dark:text-blue-300">
+                🧪 Authentication Demo
               </Text>
-              <Text variant="secondary" size="xs" className="text-center">
-                Email: demo@example.com
+              <Text variant="secondary" size="xs" className="text-center mb-2">
+                <Text className="font-medium">Demo Credentials (Pre-filled):</Text>
               </Text>
-              <Text variant="secondary" size="xs" className="text-center">
-                Password: Test123!@#
+              <Text variant="secondary" size="xs" className="text-center font-mono bg-blue-100 dark:bg-blue-800 px-2 py-1 rounded">
+                demo@example.com / Test123!@#
               </Text>
-              <Text variant="secondary" size="xs" className="text-center mt-2 opacity-70">
-                These are pre-filled for easy testing
+              <Text variant="secondary" size="xs" className="text-center mt-3 opacity-80">
+                This demo shows authentication flow with mock data.
+                Success/failure dialogs will appear after submission.
               </Text>
             </View>
           </View>

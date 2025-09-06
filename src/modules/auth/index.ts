@@ -1,6 +1,3 @@
-// Types
-export * from './types/auth.types';
-
 // Repository
 export { AuthRepositoryImpl } from './repositories/AuthRepository';
 
@@ -16,7 +13,34 @@ export { MFASetupUseCaseImpl } from './useCases/MFASetupUseCase';
 export { MFAVerificationUseCaseImpl } from './useCases/MFAVerificationUseCase';
 
 // Store
-export * from './store';
+export { default as authSlice } from './store/authSlice';
+export { 
+  setLoading, 
+  setError, 
+  clearError,
+  loginSuccess,
+  logout,
+  tokensRefreshed,
+  userUpdated,
+  sessionRestored
+} from './store/authSlice';
+export { 
+  loginThunk, 
+  signupThunk, 
+  logoutThunk, 
+  restoreSessionThunk 
+} from './store/authThunks';
+
+// Types
+export type { 
+  AuthState, 
+  User, 
+  AuthTokens,
+  LoginCredentials,
+  SignupCredentials,
+  GoogleOAuthCredentials,
+  UserSession
+} from './types/auth.types';
 
 // Secure Cache
 export { SecureCache, secureCache } from '../../core/storage/cache/SecureCache';

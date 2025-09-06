@@ -27,6 +27,18 @@ export default appSchema({
         { name: 'created_at', type: 'number' },
         { name: 'updated_at', type: 'number' }
       ]
+    }),
+    // Notes schemas for DatabaseExample
+    tableSchema({
+      name: 'notes',
+      columns: [
+        { name: 'title', type: 'string' },
+        { name: 'content', type: 'string' },
+        { name: 'priority', type: 'string' },
+        { name: 'completed', type: 'boolean' },
+        { name: 'created_at', type: 'number' },
+        { name: 'updated_at', type: 'number' }
+      ]
     })
   ]
 })

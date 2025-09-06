@@ -143,6 +143,14 @@ export interface AuthRepository {
   verifyMFA(verification: MFAVerification): Promise<AuthResponse<boolean>>;
   disableMFA(verification: MFAVerification): Promise<AuthResponse<boolean>>;
   generateBackupCodes(): Promise<AuthResponse<string[]>>;
+  
+  // Session management methods
+  isAuthenticated(): Promise<boolean>;
+  getStoredSession(): Promise<UserSession | null>;
+  getStoredTokens(): Promise<AuthTokens | null>;
+  saveMFAToken(token: MFAToken): Promise<void>;
+  getMFAToken(): Promise<MFAToken | null>;
+  clearMFAToken(): Promise<void>;
 }
 
 // Use case interfaces

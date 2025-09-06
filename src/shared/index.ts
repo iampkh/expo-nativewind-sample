@@ -11,6 +11,12 @@ export { useThemeClasses, useColorScheme, useThemeColor } from './hooks';
 
 // Shared Utilities
 export * from './constants';
-export * from './themes';
-export * from './providers';
-export * from './types/theme';
+export type { 
+  ThemeColors, 
+  ThemeSpacing, 
+  ThemeTypography, 
+  Theme, 
+  ThemeName, 
+  ThemeContextValue 
+} from './types/theme';
+export { ThemeProvider, useTheme } from './providers';

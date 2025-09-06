@@ -1,4 +1,4 @@
-import { LocalCache } from '@/src/core/storage/cache/LocalCache';
+import { localCache } from '@/src/core/storage/cache/LocalCache';
 import { AuthStorage, UserSession, AuthTokens, MFAToken } from '../types/auth.types';
 
 export class LocalAuthStorage implements AuthStorage {
@@ -10,7 +10,7 @@ export class LocalAuthStorage implements AuthStorage {
   
   async saveSession(session: UserSession): Promise<void> {
     try {
-      await LocalCache.setItem(LocalAuthStorage.KEYS.SESSION, session);
+      await localCache.setObject(LocalAuthStorage.KEYS.SESSION, session);
     } catch (error) {
       console.error('Failed to save session:', error);
       throw new Error('Failed to save authentication session');
@@ -19,7 +19,7 @@ export class LocalAuthStorage implements AuthStorage {
   
   async getSession(): Promise<UserSession | null> {
     try {
-      const session = await LocalCache.getItem<UserSession>(LocalAuthStorage.KEYS.SESSION);
+      const session = await localCache.getObject<UserSession>(LocalAuthStorage.KEYS.SESSION);
       return session;
     } catch (error) {
       console.error('Failed to get session:', error);
@@ -30,9 +30,9 @@ export class LocalAuthStorage implements AuthStorage {
   async clearSession(): Promise<void> {
     try {
       await Promise.all([
-        LocalCache.removeItem(LocalAuthStorage.KEYS.SESSION),
-        LocalCache.removeItem(LocalAuthStorage.KEYS.TOKENS),
-        LocalCache.removeItem(LocalAuthStorage.KEYS.MFA_TOKEN),
+        localCache.removeItem(LocalAuthStorage.KEYS.SESSION),
+        localCache.removeItem(LocalAuthStorage.KEYS.TOKENS),
+        localCache.removeItem(LocalAuthStorage.KEYS.MFA_TOKEN),
       ]);
     } catch (error) {
       console.error('Failed to clear session:', error);
@@ -42,7 +42,7 @@ export class LocalAuthStorage implements AuthStorage {
   
   async saveTokens(tokens: AuthTokens): Promise<void> {
     try {
-      await LocalCache.setItem(LocalAuthStorage.KEYS.TOKENS, tokens);
+      await localCache.setObject(LocalAuthStorage.KEYS.TOKENS, tokens);
     } catch (error) {
       console.error('Failed to save tokens:', error);
       throw new Error('Failed to save authentication tokens');
@@ -51,7 +51,7 @@ export class LocalAuthStorage implements AuthStorage {
   
   async getTokens(): Promise<AuthTokens | null> {
     try {
-      const tokens = await LocalCache.getItem<AuthTokens>(LocalAuthStorage.KEYS.TOKENS);
+      const tokens = await localCache.getObject<AuthTokens>(LocalAuthStorage.KEYS.TOKENS);
       return tokens;
     } catch (error) {
       console.error('Failed to get tokens:', error);
@@ -61,7 +61,7 @@ export class LocalAuthStorage implements AuthStorage {
   
   async clearTokens(): Promise<void> {
     try {
-      await LocalCache.removeItem(LocalAuthStorage.KEYS.TOKENS);
+      await localCache.removeItem(LocalAuthStorage.KEYS.TOKENS);
     } catch (error) {
       console.error('Failed to clear tokens:', error);
     }
@@ -69,7 +69,7 @@ export class LocalAuthStorage implements AuthStorage {
   
   async saveMFAToken(token: MFAToken): Promise<void> {
     try {
-      await LocalCache.setItem(LocalAuthStorage.KEYS.MFA_TOKEN, token);
+      await localCache.setObject(LocalAuthStorage.KEYS.MFA_TOKEN, token);
     } catch (error) {
       console.error('Failed to save MFA token:', error);
       throw new Error('Failed to save MFA token');
@@ -78,7 +78,7 @@ export class LocalAuthStorage implements AuthStorage {
   
   async getMFAToken(): Promise<MFAToken | null> {
     try {
-      const token = await LocalCache.getItem<MFAToken>(LocalAuthStorage.KEYS.MFA_TOKEN);
+      const token = await localCache.getObject<MFAToken>(LocalAuthStorage.KEYS.MFA_TOKEN);
       return token;
     } catch (error) {
       console.error('Failed to get MFA token:', error);
@@ -88,7 +88,7 @@ export class LocalAuthStorage implements AuthStorage {
   
   async clearMFAToken(): Promise<void> {
     try {
-      await LocalCache.removeItem(LocalAuthStorage.KEYS.MFA_TOKEN);
+      await localCache.removeItem(LocalAuthStorage.KEYS.MFA_TOKEN);
     } catch (error) {
       console.error('Failed to clear MFA token:', error);
     }
