@@ -52,6 +52,11 @@ export default function RootLayout() {
             headerShown: true,
             presentation: 'card'
           }} />
+          <Stack.Screen name="chat" options={{ 
+            title: "Chat",
+            headerShown: false,
+            presentation: 'card'
+          }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />

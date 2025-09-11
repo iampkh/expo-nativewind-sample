@@ -107,10 +107,11 @@ export interface UseChatReturn {
   loading: boolean
   error: string | null
   sendingMessage: boolean
-  createConversation: (data: CreateConversationRequest) => Promise<void>
-  sendMessage: (data: SendMessageRequest) => Promise<void>
+  createConversation: (data: CreateConversationRequest & { createdBy: string }) => Promise<void>
+  sendMessage: (data: SendMessageRequest & { senderId: string }) => Promise<void>
   selectConversation: (conversationId: string) => Promise<void>
-  markAsRead: (conversationId: string) => Promise<void>
-  refreshConversations: () => Promise<void>
+  markAsRead: (conversationId: string, userId: string) => Promise<void>
+  refreshConversations: (filters?: ChatFilters) => Promise<void>
   refreshMessages: (conversationId: string) => Promise<void>
+  clearError: () => void
 }

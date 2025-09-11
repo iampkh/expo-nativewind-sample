@@ -127,6 +127,12 @@ export default function NotesScreen() {
           
           <View className="flex-row gap-2">
             <Button
+              title="💬 Chat"
+              onPress={() => router.push('/chat')}
+              variant="primary"
+              size="sm"
+            />
+            <Button
               title="List Examples"
               onPress={() => router.push('/ListExample')}
               variant="secondary"

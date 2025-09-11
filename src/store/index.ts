@@ -7,8 +7,8 @@ import pollSlice from '../modules/poll/store/pollSlice';
 import financeSlice from '../modules/finance/store/financeSlice';
 import taskSlice from '../modules/task/store/taskSlice';
 import sampleSlice from '../modules/sample/store/sampleSlice';
-// Note: chat, geomap, and analytics slices are not yet fully implemented
-// import chatSlice from '../modules/chat/store/chatSlice';
+import chatSlice from '../modules/chat/store/chatSlice';
+// Note: geomap, and analytics slices are not yet fully implemented
 // import geomapSlice from '../modules/geomap/store/geomapSlice';
 // import analyticsSlice from '../modules/analytics/store/analyticsSlice';
 import { NotesRepository } from '../modules/sample/repositories/NotesRepository';
@@ -29,8 +29,8 @@ export const store = configureStore({
     finance: financeSlice,
     task: taskSlice,
     sample: sampleSlice,
-    // Note: chat, geomap, and analytics will be added when fully implemented
-    // chat: chatSlice,
+    chat: chatSlice,
+    // Note: geomap, and analytics will be added when fully implemented
     // geomap: geomapSlice,
     // analytics: analyticsSlice,
   },
