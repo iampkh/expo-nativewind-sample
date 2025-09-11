@@ -6,7 +6,7 @@ import { ListItem } from '@/src/shared/components/list';
 import { useTheme } from '@/src/shared/hooks/useTheme';
 import { useAppSelector, useAppDispatch } from '@/src/store';
 import { selectAllNotes, selectNotesLoading, selectNotesError, selectSelectedView, selectNotesStats } from '@/src/store/slices/notesSlice';
-import { NotesScreenUseCase } from '@/src/core/useCases/screens/NotesScreenUseCase';
+import { NotesScreenUseCase } from '@/src/modules/sample/useCases/NotesScreenUseCase';
 import { useScreenUseCase } from '@/src/shared/providers/UseCaseProvider';
 import { logoutThunk } from '@/src/modules/auth/store';
 

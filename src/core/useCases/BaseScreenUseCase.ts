@@ -1,7 +1,7 @@
-import { AbstractBaseUseCase } from './BaseUseCase';
+import { BaseUseCase } from './BaseUseCase';
 import { ScreenUseCase, UseCaseContext } from './types';
 
-export abstract class AbstractScreenUseCase extends AbstractBaseUseCase implements ScreenUseCase {
+export abstract class AbstractScreenUseCase extends BaseUseCase implements ScreenUseCase {
   private initialized = false;
   private focused = false;
 

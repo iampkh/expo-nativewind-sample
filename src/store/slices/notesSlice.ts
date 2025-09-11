@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { Note, CreateNoteData, UpdateNoteData, NotesFilter } from '../../shared/types/notes';
 import { ListSliceState, FetchParams } from '../types';
-import { NotesRepository } from '../../core/repositories/NotesRepository';
+import { NotesRepository } from '../../modules/sample/repositories/NotesRepository';
 
 // Async thunks
 export const fetchNotes = createAsyncThunk(

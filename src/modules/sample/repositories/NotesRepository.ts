@@ -1,7 +1,7 @@
-import { BaseRepository, FindAllParams } from './types';
-import { Note, CreateNoteData, UpdateNoteData, NotesFilter } from '../../shared/types/notes';
-import { BaseEntity } from '../../store/types';
-import { LocalCache } from '../storage/cache/LocalCache';
+import { BaseRepository, FindAllParams } from '../../../core/repositories/types';
+import { Note, CreateNoteData, UpdateNoteData, NotesFilter } from '../../../shared/types/notes';
+import { BaseEntity } from '../../../store/types';
+import { LocalCache } from '../../../core/storage/cache/LocalCache';
 
 export class NotesRepository implements BaseRepository<Note> {
   private static readonly STORAGE_KEY = 'notes_storage';

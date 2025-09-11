@@ -1,5 +1,5 @@
-import { AbstractScreenUseCase } from '../BaseScreenUseCase';
-import { UseCaseContext, UseCaseResult } from '../types';
+import { AbstractScreenUseCase } from '../../../core/useCases/BaseScreenUseCase';
+import { UseCaseContext, UseCaseResult } from '../../../core/useCases/types';
 import { 
   fetchNotes, 
   createNote, 

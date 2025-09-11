@@ -1,4 +1,4 @@
-export { AbstractBaseUseCase } from './BaseUseCase';
+export { BaseUseCase } from './BaseUseCase';
 export { AbstractScreenUseCase } from './BaseScreenUseCase';
 export * from './types';
 
