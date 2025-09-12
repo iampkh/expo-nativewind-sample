@@ -68,6 +68,18 @@ const exampleCards: ExampleCard[] = [
     icon: '🎨',
     route: '/ThemeExample',
   },
+  {
+    id: '10',
+    title: 'Icons Demo',
+    icon: '🎭',
+    route: '/IconsDemo',
+  },
+  {
+    id: '11',
+    title: 'Animated Icons',
+    icon: '✨',
+    route: '/AnimatedIconsDemo',
+  },
 ];
 
 export default function HomeScreen() {

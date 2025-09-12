@@ -102,7 +102,9 @@ export default function ChatScreen() {
       
       // Navigate to the specific chat screen based on type
       const chatTypeRoute = option.chatType || 'group';
-      router.push(`/chat/${chatTypeRoute}/${result.id}`);
+      if (result?.id) {
+        router.push(`/chat/${chatTypeRoute}/${result.id}` as any);
+      }
       
     } catch (error) {
       Alert.alert('Error', typeof error === 'string' ? error : 'Failed to create chat');
