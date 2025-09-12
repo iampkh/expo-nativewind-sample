@@ -1,7 +1,7 @@
 import { CreateTodoRequest, TodoInteractor, UpdateTodoRequest } from '../interactors/TodoInteractor';
 import { Todo, TodoStatus } from '../../../core/storage/database/models/Todo';
 import { DatabaseResult } from '../../../shared/types/database.types';
-import { AbstractBaseUseCase } from '../../../core/useCases/BaseUseCase';
+import { BaseUseCase } from '../../../core/useCases/BaseUseCase';
 import { UseCaseContext } from '../../../core/useCases/types';
 
 export interface TodoUseCaseState {
@@ -9,7 +9,7 @@ export interface TodoUseCaseState {
   error: string | null;
 }
 
-export class SimpleTodoUseCase extends AbstractBaseUseCase {
+export class SimpleTodoUseCase extends BaseUseCase {
   private todoInteractor: TodoInteractor;
 
   constructor(context: UseCaseContext, todoInteractor: TodoInteractor) {

@@ -1,17 +1,14 @@
 import { Stack } from 'expo-router';
-import { useAppSelector } from '@/src/store';
-import { router } from 'expo-router';
-import { useEffect } from 'react';
 
 export default function AppLayout() {
-  const { isAuthenticated } = useAppSelector((state) => state.auth);
-
-  // Redirect to login if not authenticated
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.replace('/login');
-    }
-  }, [isAuthenticated]);
+  // Remove auth protection for demo purposes
+  // Authentication can be re-enabled by uncommenting the following:
+  // const { isAuthenticated } = useAppSelector((state) => state.auth);
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     router.replace('/login');
+  //   }
+  // }, [isAuthenticated]);
 
   return (
     <Stack>

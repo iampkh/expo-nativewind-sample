@@ -93,3 +93,6 @@ export class LocalCache implements CacheStorage {
     }
   }
 }
+
+// Create a default instance for easy use
+export const localCache = new LocalCache();

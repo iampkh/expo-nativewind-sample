@@ -6,7 +6,7 @@ import { ListItem } from '@/src/shared/components/list';
 import { useTheme } from '@/src/shared/hooks/useTheme';
 import { useAppSelector, useAppDispatch } from '@/src/store';
 import { selectAllNotes, selectNotesLoading, selectNotesError, selectSelectedView, selectNotesStats } from '@/src/store/slices/notesSlice';
-import { NotesScreenUseCase } from '@/src/core/useCases/screens/NotesScreenUseCase';
+import { NotesScreenUseCase } from '@/src/modules/sample/useCases/NotesScreenUseCase';
 import { useScreenUseCase } from '@/src/shared/providers/UseCaseProvider';
 import { logoutThunk } from '@/src/modules/auth/store';
 
@@ -127,8 +127,20 @@ export default function NotesScreen() {
           
           <View className="flex-row gap-2">
             <Button
+              title="💬 Chat"
+              onPress={() => router.push('/chat')}
+              variant="primary"
+              size="sm"
+            />
+            <Button
               title="List Examples"
               onPress={() => router.push('/ListExample')}
+              variant="secondary"
+              size="sm"
+            />
+            <Button
+              title="Grid Examples"
+              onPress={() => router.push('/GridExample')}
               variant="secondary"
               size="sm"
             />

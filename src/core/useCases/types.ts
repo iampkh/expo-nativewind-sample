@@ -1,8 +1,8 @@
 import { AppDispatch, RootState } from '../../store';
 
 // Base use case interface
-export interface BaseUseCase {
-  execute(...args: any[]): Promise<any> | any;
+export interface BaseUseCase<TInput = any, TOutput = any> {
+  execute(input: TInput): Promise<TOutput> | TOutput;
 }
 
 // Use case context provides access to Redux store and repositories

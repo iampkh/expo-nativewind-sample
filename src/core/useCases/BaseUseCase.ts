@@ -1,10 +1,10 @@
-import { UseCaseContext, BaseUseCase, UseCaseResult, AsyncUseCaseState } from './types';
+import { UseCaseContext, BaseUseCase as IBaseUseCase, UseCaseResult, AsyncUseCaseState } from './types';
 
-export abstract class AbstractBaseUseCase implements BaseUseCase {
-  protected context: UseCaseContext;
+export abstract class BaseUseCase<TInput = any, TOutput = any> implements IBaseUseCase<TInput, TOutput> {
+  protected context?: UseCaseContext;
   protected state: AsyncUseCaseState;
 
-  constructor(context: UseCaseContext) {
+  constructor(context?: UseCaseContext) {
     this.context = context;
     this.state = {
       loading: false,
@@ -13,7 +13,7 @@ export abstract class AbstractBaseUseCase implements BaseUseCase {
   }
 
   // Abstract method that concrete use cases must implement
-  abstract execute(...args: any[]): Promise<any> | any;
+  abstract execute(input: TInput): Promise<TOutput> | TOutput;
 
   // Helper methods for common operations
   protected async executeWithState<T>(
@@ -57,6 +57,9 @@ export abstract class AbstractBaseUseCase implements BaseUseCase {
   }
 
   protected getRepository<T>(repositoryName: string): T {
+    if (!this.context) {
+      throw new Error('Use case context not available');
+    }
     const repository = this.context.repositories[repositoryName];
     if (!repository) {
       throw new Error(`Repository '${repositoryName}' not found`);
@@ -65,10 +68,16 @@ export abstract class AbstractBaseUseCase implements BaseUseCase {
   }
 
   protected get dispatch() {
+    if (!this.context) {
+      throw new Error('Use case context not available');
+    }
     return this.context.dispatch;
   }
 
   protected get getState() {
+    if (!this.context) {
+      throw new Error('Use case context not available');
+    }
     return this.context.getState;
   }
 

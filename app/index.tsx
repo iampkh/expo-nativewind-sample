@@ -1,42 +1,38 @@
-import React, { useEffect } from 'react';
-import { ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { router } from 'expo-router';
-import { View, Text } from '@/src/shared/components/themed';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAppDispatch, useAppSelector } from '@/src/store';
+import { useAppDispatch } from '@/src/store';
 import { restoreSessionThunk } from '@/src/modules/auth/store';
 
 export default function RootScreen() {
   const dispatch = useAppDispatch();
-  const { isAuthenticated, loading, user } = useAppSelector((state) => state.auth);
+  const [isReady, setIsReady] = useState(false);
 
-  // Try to restore session on app start
+  // Initialize app on startup
   useEffect(() => {
-    dispatch(restoreSessionThunk());
+    const initializeApp = async () => {
+      try {
+        // Restore any existing session for auth screens
+        await dispatch(restoreSessionThunk());
+        
+        // Wait a moment for the layout to be ready
+        setTimeout(() => {
+          setIsReady(true);
+          // Navigate to home screen for sample app testing
+          router.replace('/HomeScreen');
+        }, 100);
+      } catch (error) {
+        console.error('Failed to initialize app:', error);
+        // Still navigate even if auth fails
+        setTimeout(() => {
+          setIsReady(true);
+          router.replace('/HomeScreen');
+        }, 100);
+      }
+    };
+
+    initializeApp();
   }, [dispatch]);
 
-  // Navigate based on auth state
-  useEffect(() => {
-    if (!loading) {
-      if (isAuthenticated && user) {
-        // User is authenticated, redirect to main app
-        router.replace('/(app)');
-      } else {
-        // User is not authenticated, redirect to login
-        router.replace('/login');
-      }
-    }
-  }, [isAuthenticated, user, loading]);
-
-  // Show loading screen while checking auth state
-  return (
-    <SafeAreaView className="flex-1 bg-background">
-      <View className="flex-1 justify-center items-center">
-        <ActivityIndicator size="large" className="mb-4" />
-        <Text variant="secondary" size="base">
-          Loading...
-        </Text>
-      </View>
-    </SafeAreaView>
-  );
+  // This component will only show briefly during initial navigation
+  return null;
 }

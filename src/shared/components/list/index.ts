@@ -8,6 +8,7 @@ export { ContactVariant } from './ContactVariant';
 export { List } from './List';
 export { SimpleListVariant } from './SimpleListVariant';
 export { GroupedListVariant } from './GroupedListVariant';
+export { GridListVariant } from './GridListVariant';
 
 export type { 
   ListItemProps, 
@@ -21,6 +22,7 @@ export type {
   BaseListProps,
   SimpleListProps,
   GroupedListProps,
+  GridListProps,
   ListComponentVariant,
   ListProps
 } from './types';

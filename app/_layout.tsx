@@ -34,6 +34,7 @@ export default function RootLayout() {
       <NavigationThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
         <Stack>
           <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="HomeScreen" options={{ headerShown: false }} />
           <Stack.Screen name="login" options={{ headerShown: false }} />
           <Stack.Screen name="(app)" options={{ headerShown: false }} />
           <Stack.Screen name="ListExample" options={{ 
@@ -41,9 +42,19 @@ export default function RootLayout() {
             headerShown: true,
             presentation: 'card'
           }} />
+          <Stack.Screen name="GridExample" options={{ 
+            title: "Grid Examples",
+            headerShown: true,
+            presentation: 'card'
+          }} />
           <Stack.Screen name="auth" options={{ 
             title: "Authentication Test",
             headerShown: true,
+            presentation: 'card'
+          }} />
+          <Stack.Screen name="chat" options={{ 
+            title: "Chat",
+            headerShown: false,
             presentation: 'card'
           }} />
           <Stack.Screen name="+not-found" />
