@@ -19,7 +19,11 @@
       },
       "edgeToEdgeEnabled": true,
       "allowBackup": false,
-      "package": "com.anonymous.exponativewindsample"
+      "package": "com.anonymous.exponativewindsample",
+      "permissions": [
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.VIBRATE"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -29,6 +33,7 @@
     "plugins": [
       "expo-router",
       "@morrowdigital/watermelondb-expo-plugin",
+      "expo-notifications",
       [
         "expo-splash-screen",
         {

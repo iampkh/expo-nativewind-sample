@@ -2,8 +2,6 @@ package com.anonymous.exponativewindsample
 
 
 import android.app.Application
-        
-
 import android.content.res.Configuration
 
 import com.facebook.react.PackageList
