@@ -80,6 +80,12 @@ const exampleCards: ExampleCard[] = [
     icon: '✨',
     route: '/AnimatedIconsDemo',
   },
+  {
+    id: '12',
+    title: 'Notifications',
+    icon: '🔔',
+    route: '/NotificationDemo',
+  },
 ];
 
 export default function HomeScreen() {
